@@ -1,0 +1,130 @@
+{
+    "address": "0xb12d9354E12BD9AF038D756Dc153c9b178e868F6",
+    "abi": [
+        {
+            "inputs": [
+                {
+                    "components": [
+                        {
+                            "internalType": "uint256",
+                            "name": "salt",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "Address",
+                            "name": "maker",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "Address",
+                            "name": "receiver",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "Address",
+                            "name": "makerAsset",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "Address",
+                            "name": "takerAsset",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "makingAmount",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "takingAmount",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "MakerTraits",
+                            "name": "makerTraits",
+                            "type": "uint256"
+                        }
+                    ],
+                    "internalType": "struct IOrderMixin.Order",
+                    "name": "order",
+                    "type": "tuple"
+                },
+                {
+                    "internalType": "bytes",
+                    "name": "extension",
+                    "type": "bytes"
+                },
+                {
+                    "components": [
+                        {
+                            "internalType": "contract AggregatorV3Interface",
+                            "name": "oracle",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "originalAnswer",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "ttl",
+                            "type": "uint256"
+                        }
+                    ],
+                    "internalType": "struct SafeOrderBuilder.OracleQueryParams",
+                    "name": "makerAssetOracleParams",
+                    "type": "tuple"
+                },
+                {
+                    "components": [
+                        {
+                            "internalType": "contract AggregatorV3Interface",
+                            "name": "oracle",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "originalAnswer",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "ttl",
+                            "type": "uint256"
+                        }
+                    ],
+                    "internalType": "struct SafeOrderBuilder.OracleQueryParams",
+                    "name": "takerAssetOracleParams",
+                    "type": "tuple"
+                }
+            ],
+            "name": "buildAndSignOrder",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "contract IOrderMixin",
+                    "name": "limitOrderProtocol",
+                    "type": "address"
+                },
+                {
+                    "internalType": "contract IOrderRegistrator",
+                    "name": "orderRegistrator",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "constructor"
+        },
+        {
+            "inputs": [],
+            "name": "StaleOraclePrice",
+            "type": "error"
+        }
+    ]
+}
