@@ -26,6 +26,7 @@ uint40 series
 ### Functions list
 - [hasExtension(makerTraits) internal](#hasextension)
 - [isAllowedSender(makerTraits, sender) internal](#isallowedsender)
+- [getExpirationTime(makerTraits) internal](#getexpirationtime)
 - [isExpired(makerTraits) internal](#isexpired)
 - [nonceOrEpoch(makerTraits) internal](#nonceorepoch)
 - [series(makerTraits) internal](#series)
@@ -79,6 +80,25 @@ Checks if the maker allows a specific taker to fill the order.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 [0] | bool | result A boolean indicating whether the taker is allowed. |
+
+### getExpirationTime
+
+```solidity
+function getExpirationTime(MakerTraits makerTraits) internal pure returns (uint256)
+```
+Returns the expiration time of the order.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| makerTraits | MakerTraits | The traits of the maker. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+[0] | uint256 | result The expiration timestamp of the order. |
 
 ### isExpired
 

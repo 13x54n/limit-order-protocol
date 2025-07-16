@@ -15,7 +15,7 @@ See [OrderMixin](OrderMixin.md) for more details.
 
 RFQ orders supports
 - Expiration time
-- Cancellation by order id
+- Cancelation by order id
 - Partial Fill (only once)
 
 See [OrderMixin](OrderMixin.md) for more details.

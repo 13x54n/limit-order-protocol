@@ -5,22 +5,27 @@
 - [ETHOrder](#ethorder)
 
 ### Functions list
-- [constructor(weth, limitOrderProtocol) public](#constructor)
+- [constructor(weth, limitOrderProtocol, accessToken) public](#constructor)
 - [ethOrdersBatch(orderHashes) external](#ethordersbatch)
-- [ethOrderDeposit(order, extension) external](#ethorderdeposit)
+- [ethOrderDeposit(order, extension, maximumPremium, auctionDuration) external](#ethorderdeposit)
 - [cancelOrder(makerTraits, orderHash) external](#cancelorder)
+- [cancelOrderByResolver(makerTraits, orderHash) external](#cancelorderbyresolver)
 - [isValidSignature(orderHash, signature) external](#isvalidsignature)
 - [postInteraction(, , orderHash, , makingAmount, , , ) external](#postinteraction)
 
 ### Events list
 - [ETHDeposited(orderHash, amount) ](#ethdeposited)
 - [ETHOrderCancelled(orderHash, amount) ](#ethordercancelled)
+- [ETHOrderCancelledByThirdParty(orderHash, amount, reward) ](#ethordercancelledbythirdparty)
 
 ### Errors list
 - [AccessDenied() ](#accessdenied)
 - [InvalidOrder() ](#invalidorder)
 - [NotEnoughBalance() ](#notenoughbalance)
 - [ExistingOrder() ](#existingorder)
+- [OrderNotExpired() ](#ordernotexpired)
+- [RewardIsTooBig() ](#rewardistoobig)
+- [CancelOrderByResolverIsForbidden() ](#cancelorderbyresolverisforbidden)
 
 ### Types
 ### ETHOrder
@@ -31,6 +36,8 @@ ETH order struct.
 struct ETHOrder {
   address maker;
   uint96 balance;
+  uint16 maximumPremium;
+  uint32 auctionDuration;
 }
 ```
 
@@ -38,7 +45,7 @@ struct ETHOrder {
 ### constructor
 
 ```solidity
-constructor(contract IWETH weth, address limitOrderProtocol) public
+constructor(contract IWETH weth, address limitOrderProtocol, contract IERC20 accessToken) public
 ```
 
 ### ethOrdersBatch
@@ -50,7 +57,7 @@ function ethOrdersBatch(bytes32[] orderHashes) external view returns (struct ETH
 ### ethOrderDeposit
 
 ```solidity
-function ethOrderDeposit(struct IOrderMixin.Order order, bytes extension) external payable returns (bytes32 orderHash)
+function ethOrderDeposit(struct IOrderMixin.Order order, bytes extension, uint16 maximumPremium, uint32 auctionDuration) external payable returns (bytes32 orderHash)
 ```
 
 ### cancelOrder
@@ -59,6 +66,20 @@ function ethOrderDeposit(struct IOrderMixin.Order order, bytes extension) extern
 function cancelOrder(MakerTraits makerTraits, bytes32 orderHash) external
 ```
 Sets ordersMakersBalances to 0, refunds ETH and does standard order cancellation on Limit Order Protocol.
+
+### cancelOrderByResolver
+
+```solidity
+function cancelOrderByResolver(MakerTraits makerTraits, bytes32 orderHash) external
+```
+Allows third-party to cancel an expired order and receive a reward.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| makerTraits | MakerTraits | The traits of the maker |
+| orderHash | bytes32 | Hash of the order to cancel |
 
 ### isValidSignature
 
@@ -101,6 +122,12 @@ event ETHDeposited(bytes32 orderHash, uint256 amount)
 event ETHOrderCancelled(bytes32 orderHash, uint256 amount)
 ```
 
+### ETHOrderCancelledByThirdParty
+
+```solidity
+event ETHOrderCancelledByThirdParty(bytes32 orderHash, uint256 amount, uint256 reward)
+```
+
 ### Errors
 ### AccessDenied
 
@@ -124,5 +151,23 @@ error NotEnoughBalance()
 
 ```solidity
 error ExistingOrder()
+```
+
+### OrderNotExpired
+
+```solidity
+error OrderNotExpired()
+```
+
+### RewardIsTooBig
+
+```solidity
+error RewardIsTooBig()
+```
+
+### CancelOrderByResolverIsForbidden
+
+```solidity
+error CancelOrderByResolverIsForbidden()
 ```
 

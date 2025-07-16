@@ -1,22 +1,24 @@
 
 ## IOrderMixin
 
+Interface for order processing logic in the 1inch Limit Order Protocol.
+
 ### Types list
 - [Order](#order)
 
 ### Functions list
-- [bitInvalidatorForOrder(maker, slot) external](#bitinvalidatorfororder)
-- [remainingInvalidatorForOrder(maker, orderHash) external](#remaininginvalidatorfororder)
-- [rawRemainingInvalidatorForOrder(maker, orderHash) external](#rawremaininginvalidatorfororder)
+- [simulate(target, data) external](#simulate)
 - [cancelOrder(makerTraits, orderHash) external](#cancelorder)
 - [cancelOrders(makerTraits, orderHashes) external](#cancelorders)
 - [bitsInvalidateForOrder(makerTraits, additionalMask) external](#bitsinvalidatefororder)
-- [hashOrder(order) external](#hashorder)
-- [simulate(target, data) external](#simulate)
 - [fillOrder(order, r, vs, amount, takerTraits) external](#fillorder)
 - [fillOrderArgs(order, r, vs, amount, takerTraits, args) external](#fillorderargs)
 - [fillContractOrder(order, signature, amount, takerTraits) external](#fillcontractorder)
 - [fillContractOrderArgs(order, signature, amount, takerTraits, args) external](#fillcontractorderargs)
+- [bitInvalidatorForOrder(maker, slot) external](#bitinvalidatorfororder)
+- [remainingInvalidatorForOrder(maker, orderHash) external](#remaininginvalidatorfororder)
+- [rawRemainingInvalidatorForOrder(maker, orderHash) external](#rawremaininginvalidatorfororder)
+- [hashOrder(order) external](#hashorder)
 
 ### Events list
 - [OrderFilled(orderHash, remainingAmount) ](#orderfilled)
@@ -61,65 +63,21 @@ struct Order {
 ```
 
 ### Functions
-### bitInvalidatorForOrder
+### simulate
 
 ```solidity
-function bitInvalidatorForOrder(address maker, uint256 slot) external view returns (uint256 result)
+function simulate(address target, bytes data) external
 ```
-Returns bitmask for double-spend invalidators based on lowest byte of order.info and filled quotes
+Delegates execution to custom implementation. Could be used to validate if `transferFrom` works properly
+
+_The function always reverts and returns the simulation results in revert data._
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| maker | address | Maker address |
-| slot | uint256 | Slot number to return bitmask for |
-
-#### Return Values
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-result | uint256 | Each bit represents whether corresponding was already invalidated |
-
-### remainingInvalidatorForOrder
-
-```solidity
-function remainingInvalidatorForOrder(address maker, bytes32 orderHash) external view returns (uint256 remaining)
-```
-Returns bitmask for double-spend invalidators based on lowest byte of order.info and filled quotes
-
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| maker | address |  |
-| orderHash | bytes32 | Hash of the order |
-
-#### Return Values
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-remaining | uint256 | Remaining amount of the order |
-
-### rawRemainingInvalidatorForOrder
-
-```solidity
-function rawRemainingInvalidatorForOrder(address maker, bytes32 orderHash) external view returns (uint256 remainingRaw)
-```
-Returns bitmask for double-spend invalidators based on lowest byte of order.info and filled quotes
-
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| maker | address |  |
-| orderHash | bytes32 | Hash of the order |
-
-#### Return Values
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-remainingRaw | uint256 | Inverse of the remaining amount of the order if order was filled at least once, otherwise 0 |
+| target | address | Addresses that will be delegated |
+| data | bytes | Data that will be passed to delegatee |
 
 ### cancelOrder
 
@@ -162,41 +120,6 @@ Cancels all quotes of the maker (works for bit-invalidating orders only)
 | ---- | ---- | ----------- |
 | makerTraits | MakerTraits | Order makerTraits |
 | additionalMask | uint256 | Additional bitmask to invalidate orders |
-
-### hashOrder
-
-```solidity
-function hashOrder(struct IOrderMixin.Order order) external view returns (bytes32 orderHash)
-```
-Returns order hash, hashed with limit order protocol contract EIP712
-
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| order | struct IOrderMixin.Order | Order |
-
-#### Return Values
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-orderHash | bytes32 | Hash of the order |
-
-### simulate
-
-```solidity
-function simulate(address target, bytes data) external
-```
-Delegates execution to custom implementation. Could be used to validate if `transferFrom` works properly
-
-_The function always reverts and returns the simulation results in revert data._
-
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| target | address | Addresses that will be delegated |
-| data | bytes | Data that will be passed to delegatee |
 
 ### fillOrder
 
@@ -301,6 +224,85 @@ _See tests for examples_
 makingAmount | uint256 | Actual amount transferred from maker to taker |
 takingAmount | uint256 | Actual amount transferred from taker to maker |
 orderHash | bytes32 | Hash of the filled order |
+
+### bitInvalidatorForOrder
+
+```solidity
+function bitInvalidatorForOrder(address maker, uint256 slot) external view returns (uint256 result)
+```
+Returns bitmask for double-spend invalidators based on lowest byte of order.info and filled quotes
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| maker | address | Maker address |
+| slot | uint256 | Slot number to return bitmask for |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+result | uint256 | Each bit represents whether corresponding was already invalidated |
+
+### remainingInvalidatorForOrder
+
+```solidity
+function remainingInvalidatorForOrder(address maker, bytes32 orderHash) external view returns (uint256 remaining)
+```
+Returns bitmask for double-spend invalidators based on lowest byte of order.info and filled quotes
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| maker | address |  |
+| orderHash | bytes32 | Hash of the order |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+remaining | uint256 | Remaining amount of the order |
+
+### rawRemainingInvalidatorForOrder
+
+```solidity
+function rawRemainingInvalidatorForOrder(address maker, bytes32 orderHash) external view returns (uint256 remainingRaw)
+```
+Returns bitmask for double-spend invalidators based on lowest byte of order.info and filled quotes
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| maker | address |  |
+| orderHash | bytes32 | Hash of the order |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+remainingRaw | uint256 | Inverse of the remaining amount of the order if order was filled at least once, otherwise 0 |
+
+### hashOrder
+
+```solidity
+function hashOrder(struct IOrderMixin.Order order) external view returns (bytes32 orderHash)
+```
+Returns order hash, hashed with limit order protocol contract EIP712
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| order | struct IOrderMixin.Order | Order |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+orderHash | bytes32 | Hash of the order |
 
 ### Events
 ### OrderFilled
